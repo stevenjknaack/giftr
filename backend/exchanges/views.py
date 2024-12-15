@@ -19,3 +19,20 @@ class ExchangeViewSet(viewsets.ModelViewSet):
             return owner.owned_exchanges
         
         return self.queryset
+    
+class ExchangeMemberViewSet(viewsets.ModelViewSet):
+    queryset = models.ExchangeMember.objects.all()
+    serializer_class = serializers.ExchangeMemberSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        user_id = self.request.query_params.get('user', None)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+
+        exchange_id = self.request.query_params.get('exchange', None)
+        if exchange_id:
+            queryset = queryset.filter(exchange_id=exchange_id)
+        
+        return queryset

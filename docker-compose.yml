@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
         SECRET_KEY: django-insecure-7gryu-1xwk4vw6mk-w$0!eh#2^kdin1r@e0x12ssc56sgu*&oy
-        DB_NAME: ati
+        DB_NAME: db
         DB_USER: root
         DB_PASSWORD: password
         DEBUG: "True"

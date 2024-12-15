@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'exchanges', views.ExchangeViewSet)
+router.register(r'exchange-members', views.ExchangeMemberViewSet, basename='exchangemember')
 
 urlpatterns = [
     path('', include(router.urls)),
