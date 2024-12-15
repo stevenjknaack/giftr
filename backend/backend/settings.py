@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
-    # 'background_task'
-    'users'
+    'corsheaders',
+    # 'background_task',
+    'users',
 ]
 
 if DEBUG:

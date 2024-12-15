@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: ati
+      POSTGRES_DB: db
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     ports:
