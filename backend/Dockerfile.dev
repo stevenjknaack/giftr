@@ -1,0 +1,25 @@
+# Development Dockerfile for Django
+FROM python:3.11-slim
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# install necessary PostgreSQL dev libraries
+# only needed when using psycopg2 (better for production) 
+# instead of psycopg2-binary
+# RUN apt-get update \
+#     && apt-get install -y libpq-dev gcc \
+#     && apt-get clean
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy the project files
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run the Django development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

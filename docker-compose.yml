@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ati
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - db-backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    environment:
+        SECRET_KEY: django-insecure-7gryu-1xwk4vw6mk-w$0!eh#2^kdin1r@e0x12ssc56sgu*&oy
+        DB_NAME: ati
+        DB_USER: root
+        DB_PASSWORD: password
+        DEBUG: "True"
+    volumes:
+      - ./backend:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: on-failure:5
+    networks:
+      - db-backend
+      - backend-frontend
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+    networks:
+      - backend-frontend
+    environment:
+      WATCHPACK_POLLING: true
+      WATCHPACK_INTERVAL: 50
+      CHOKIDAR_INTERVAL: 50
+
+
+volumes:
+  postgres_data:
+
+networks:
+  db-backend:
+  backend-frontend:
+

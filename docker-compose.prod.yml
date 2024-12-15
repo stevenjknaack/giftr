@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - db-backend
+
+  backend:
+    image: registry.gitlab.com/collaboration6171034/employee-portal/backend:latest
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: on-failure:5
+    ports:
+      - "8001:8000"
+    networks:
+      - db-backend
+      - backend-frontend
+    volumes:
+      - backend_media:/usr/src/app/media
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      gunicorn --bind 0.0.0.0:8000 backend.wsgi
+      "
+
+  frontend:
+    image: registry.gitlab.com/collaboration6171034/employee-portal/${FRONTEND_IMAGE}:latest
+    ports:
+      - "3001:80"
+    networks:
+      - backend-frontend
+
+volumes:
+  postgres_data:
+  backend_media:
+
+networks:
+  db-backend:
+  backend-frontend:

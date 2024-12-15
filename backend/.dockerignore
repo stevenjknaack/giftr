@@ -1,0 +1,5 @@
+media
+.coverage
+venv
+htmlcov
+__pycache__
