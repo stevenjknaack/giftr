@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     # 'background_task',
     'users',
     'wishes',
+    'gifts',
+    'exchanges'
 ]
 
 if DEBUG:
