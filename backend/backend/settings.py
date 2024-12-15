@@ -28,8 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv(
     'SECRET_KEY', None)
 
-if not SECRET_KEY:
-    raise RuntimeError('You must set a secret key!')
+# if not SECRET_KEY:
+#     raise RuntimeError('You must set a secret key!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # 'background_task',
     'users',
+    'wishes',
 ]
 
 if DEBUG:
