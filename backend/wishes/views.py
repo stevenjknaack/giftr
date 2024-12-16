@@ -15,9 +15,14 @@ class WishViewSet(viewsets.ModelViewSet):
     #     return [IsAuthenticated()]
 
     def get_queryset(self):
+        queryset = self.queryset
+
+        exchange_id = self.request.query_params.get('exchange', None)
+        if exchange_id:
+            queryset = queryset.filter(exchange_id=exchange_id)
+
         user_id = self.request.query_params.get('user', None)
         if user_id:
-            user = get_object_or_404(User, pk=user_id)
-            return user.wishes
+            queryset = queryset.filter(user_id=user_id)
         
-        return self.queryset
+        return queryset

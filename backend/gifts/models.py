@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from wishes.models import Wish
+from exchanges.models import Exchange
 
 class Gift(models.Model):
     name = models.CharField(max_length=255, default='New Gift')
@@ -12,6 +13,7 @@ class Gift(models.Model):
     from_user = models.ForeignKey(User, related_name='gifts_given', on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name='gifts_gotten', on_delete=models.CASCADE)
     wish = models.ForeignKey(Wish, on_delete=models.CASCADE, null=True)
+    exchange = models.ForeignKey(Exchange, related_name='gifts', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'Gift {self.name}: {self.from_user} -> {self.to_user}'
