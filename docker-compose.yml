@@ -31,7 +31,7 @@ services:
     restart: on-failure:5
     networks:
       - db-backend
-      - backend-frontend
+      # - backend-frontend
     command: >
       sh -c "
       python manage.py migrate &&
@@ -40,20 +40,20 @@ services:
     env_file:
       - ./backend/.env
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/usr/src/app
-    networks:
-      - backend-frontend
-    environment:
-      WATCHPACK_POLLING: true
-      WATCHPACK_INTERVAL: 50
-      CHOKIDAR_INTERVAL: 50
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #   networks:
+  #     - backend-frontend
+  #   environment:
+  #     WATCHPACK_POLLING: true
+  #     WATCHPACK_INTERVAL: 50
+  #     CHOKIDAR_INTERVAL: 50
 
 
 volumes:
@@ -61,5 +61,5 @@ volumes:
 
 networks:
   db-backend:
-  backend-frontend:
+  # backend-frontend:
 

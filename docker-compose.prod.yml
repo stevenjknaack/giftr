@@ -11,7 +11,9 @@ services:
       - db-backend
 
   backend:
-    image: registry.gitlab.com/collaboration6171034/employee-portal/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
     env_file:
       - .env
     depends_on:
@@ -21,7 +23,7 @@ services:
       - "8001:8000"
     networks:
       - db-backend
-      - backend-frontend
+      # - backend-frontend
     volumes:
       - backend_media:/usr/src/app/media
     command: >
@@ -30,12 +32,12 @@ services:
       gunicorn --bind 0.0.0.0:8000 backend.wsgi
       "
 
-  frontend:
-    image: registry.gitlab.com/collaboration6171034/employee-portal/${FRONTEND_IMAGE}:latest
-    ports:
-      - "3001:80"
-    networks:
-      - backend-frontend
+  # frontend:
+  #   image: registry.gitlab.com/collaboration6171034/employee-portal/${FRONTEND_IMAGE}:latest
+  #   ports:
+  #     - "3001:80"
+  #   networks:
+  #     - backend-frontend
 
 volumes:
   postgres_data:
@@ -43,4 +45,4 @@ volumes:
 
 networks:
   db-backend:
-  backend-frontend:
+  # backend-frontend:
