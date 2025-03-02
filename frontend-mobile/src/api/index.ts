@@ -1,0 +1,50 @@
+import axios from 'axios';
+import { Alert } from 'react-native';
+import * as Keychain from 'react-native-keychain';
+
+const baseURL = 'https://giftr.dev/api'; //TODO: update to use react env variables
+
+// Default config
+const api = axios.create({
+  baseURL: baseURL,
+  timeout: 10000,  
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request Interceptor (for attaching tokens)
+// api.interceptors.request.use(
+//   async (config) => {
+//     // TODO: Add support for android
+//     const credentials = await Keychain.getGenericPassword('accessToken');
+//     if (credentials) {
+//       const { password: accessToken } = credentials;
+//       if (accessToken) {
+//         config.headers.Authorization = `Bearer ${accessToken}`;
+//       }
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+// Response Interceptor (for handling errors)
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (error.response?.status === 401) {
+      // TODO: update to attempt token refresh
+      Alert.alert('Session expired', 'Please log in again.');
+    } else {
+      Alert.alert('Request failed', 'Something went wrong.');
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axios;
