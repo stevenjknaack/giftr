@@ -13,8 +13,8 @@ const LoginScreen: React.FC<any> = ({ navigation }) => {
       if (await login(username, password)) {
         navigation.navigate('Home');
       } else {
-        Alert.alert("Login failed", "Please try again.")
-      } 
+        Alert.alert('Login failed', 'Please try again.');
+      }
     }
   };
 

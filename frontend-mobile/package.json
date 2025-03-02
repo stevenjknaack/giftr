@@ -16,6 +16,7 @@
     "@react-navigation/stack": "^7.1.1",
     "axios": "^1.8.1",
     "expo": "~52.0.37",
+    "expo-secure-store": "^14.0.1",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
@@ -28,8 +29,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@eslint/js": "^9.21.0",
     "@types/react": "~18.3.12",
-    "typescript": "^5.3.3"
+    "eslint": "^9.21.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.2",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.25.0"
   },
   "private": true
 }

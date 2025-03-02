@@ -1,35 +1,32 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
-const baseURL = 'https://giftr.dev/api'; //TODO: update to use react env variables
+const baseURL = 'https://giftr.dev/api/'; //TODO: update to use react env variables
 
 // Default config
 const api = axios.create({
   baseURL: baseURL,
-  timeout: 10000,  
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // Request Interceptor (for attaching tokens)
-// api.interceptors.request.use(
-//   async (config) => {
-//     // TODO: Add support for android
-//     const credentials = await Keychain.getGenericPassword('accessToken');
-//     if (credentials) {
-//       const { password: accessToken } = credentials;
-//       if (accessToken) {
-//         config.headers.Authorization = `Bearer ${accessToken}`;
-//       }
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.request.use(
+  async (config) => {
+    // TODO: Add support for android
+    const accessToken = await SecureStore.getItemAsync('accessToken');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Response Interceptor (for handling errors)
 api.interceptors.response.use(
@@ -47,4 +44,4 @@ api.interceptors.response.use(
   }
 );
 
-export default axios;
+export default api;

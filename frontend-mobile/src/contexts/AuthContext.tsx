@@ -1,15 +1,15 @@
 // TODO: Add support for Android
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import * as Keychain from 'react-native-keychain';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
-import { callLogin } from '@/api/users';
-
-type User = {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-};
+import AuthApi from '@/api/auth';
+import { User } from '@/api/types';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -28,13 +28,15 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      const accessToken = await Keychain.getGenericPassword();
+      const accessToken = await SecureStore.getItemAsync('accessToken');
       if (accessToken) {
         setIsAuthenticated(true);
         // TODO: use whoAmI endpoint to fetch user data
@@ -45,31 +47,33 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await callLogin(username, password);
-    
+      const response = await AuthApi.login(username, password);
+
       if (response.status !== 200) {
         throw new Error();
       }
 
       const data = response.data;
 
-      // await Keychain.setGenericPassword('accessToken', data.access);
-      // await Keychain.setGenericPassword('refreshToken', data.refresh);
+      await SecureStore.setItemAsync('accessToken', data.access);
+      await SecureStore.setItemAsync('refreshToken', data.refresh);
 
       await setIsAuthenticated(true);
-      Alert.alert("login success", "succeeded!")
+      Alert.alert('login success', 'succeeded!');
       return true;
     } catch (error) {
-      Alert.alert("error", "caught" + error)
+      Alert.alert('error', 'caught' + error);
       return false;
     }
   };
 
   // Logout function
   const logout = async () => {
-    await Keychain.resetGenericPassword();
+    await SecureStore.deleteItemAsync('accessToken');
+    await SecureStore.deleteItemAsync('refreshToken');
     setIsAuthenticated(false);
     setUser(null);
+    Alert.alert('logout success', 'yes');
   };
 
   return (

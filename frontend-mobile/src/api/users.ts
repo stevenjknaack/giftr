@@ -1,30 +1,19 @@
-import { Alert } from 'react-native';
-import api from '.';
+import api from './api';
+import { User, BaseData } from './types';
 
-type UserRegistrationDetails = {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-}
+const usersUrl = 'users/';
+const userIdUrl = (id: number) => `${usersUrl}${id}/`;
 
-export const callRegister = async (
-    username: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    password: string
-) => {
-    return await api.post<Omit<UserRegistrationDetails, 'password'>>('/auth/register/', {
-        username,
-        email,
-        firstName,
-        lastName,
-        password
-    });
+const UserApi = {
+  list: () => {
+    return api.get<User[]>(usersUrl);
+  },
+  get: (userId: number) => {
+    return api.get<User>(userIdUrl(userId));
+  },
+  partialUpdate: (userId: number, data: Partial<BaseData<User>>) => {
+    return api.patch<User>(userIdUrl(userId), data);
+  },
 };
 
-export const callLogin = async (username: string, password: string) => {
-    return await api.post<{access: string; refresh: string;}>('https://giftr.dev/api/auth/token/', {username, password});
-};
+export default UserApi;
