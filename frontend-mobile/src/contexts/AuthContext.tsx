@@ -38,8 +38,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const checkAuthentication = async () => {
       const accessToken = await SecureStore.getItemAsync('accessToken');
       if (accessToken) {
+        await setUser((await AuthApi.whoAmI()).data);
         setIsAuthenticated(true);
-        // TODO: use whoAmI endpoint to fetch user data
       }
     };
     checkAuthentication();
@@ -58,7 +58,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       await SecureStore.setItemAsync('accessToken', data.access);
       await SecureStore.setItemAsync('refreshToken', data.refresh);
 
+      await setUser((await AuthApi.whoAmI()).data);
       await setIsAuthenticated(true);
+
       Alert.alert('login success', 'succeeded!');
       return true;
     } catch (error) {

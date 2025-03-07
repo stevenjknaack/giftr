@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/navigation/Navigation';
 
-const LoginScreen: React.FC<any> = ({ navigation }) => {
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
+type LoginScreenRouteProp = RouteProp<RootStackParamList, 'Login'>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+  route: LoginScreenRouteProp;
+};
+
+const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     if (username && password) {
-      if (await login(username, password)) {
-        navigation.navigate('Home');
-      } else {
-        Alert.alert('Login failed', 'Please try again.');
-      }
+      await login(username, password);
     }
+  };
+
+  const goToRegister = () => {
+    navigation.navigate('Register');
   };
 
   return (
@@ -35,6 +48,7 @@ const LoginScreen: React.FC<any> = ({ navigation }) => {
         onChangeText={setPassword}
       />
       <Button title="Login" onPress={handleLogin} />
+      <Button title="Register ->" onPress={goToRegister} />
     </View>
   );
 };
