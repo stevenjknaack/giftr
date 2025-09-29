@@ -1,7 +1,7 @@
-# employee-portal
+# giftr
 
 ## Description
-American Technology Intiative's ERP
+My bored christmas-time codings.
 
 ## Visuals
 TBA
