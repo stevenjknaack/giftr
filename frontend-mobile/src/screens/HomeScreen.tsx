@@ -99,7 +99,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <>
-      <StyledModal visible={modalVisible} setVisible={setModalVisible}>
+      <StyledModal
+        visible={modalVisible}
+        closeModal={() => setModalVisible(false)}
+      >
         <Text>Add new exchange</Text>
         <TextInput
           style={styles.input}
