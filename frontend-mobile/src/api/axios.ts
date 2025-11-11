@@ -1,23 +1,25 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import NoAuthApi from './noauth';
+import AuthApi from './auth';
 
 const baseURL = 'https://giftr.dev/api/'; //TODO: update to use react env variables
-
-// Default config
-const api = axios.create({
+const baseConfig = {
   baseURL: baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-});
+};
+
+/**
+ * Axios instance for accessing authenticated routes
+ */
+export const authenticatedAxiosApi = axios.create(baseConfig);
 
 // Request Interceptor (for attaching tokens)
-api.interceptors.request.use(
+authenticatedAxiosApi.interceptors.request.use(
   async (config) => {
-    // TODO: Add support for android
     const accessToken = await SecureStore.getItemAsync('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -30,7 +32,7 @@ api.interceptors.request.use(
 );
 
 // Response Interceptor (for handling errors)
-api.interceptors.response.use(
+authenticatedAxiosApi.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -49,7 +51,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const response = await NoAuthApi.refresh(refreshToken);
+    const response = await AuthApi.refresh(refreshToken);
     if (response.status !== 200) {
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('accessToken');
@@ -58,8 +60,6 @@ api.interceptors.response.use(
 
     await SecureStore.setItemAsync('accessToken', response.data.access);
     Alert.alert('API Interceptor', 'Successfully refreshed accessToken.');
-    return api(error.config);
+    return authenticatedAxiosApi(error.config);
   }
 );
-
-export default api;
