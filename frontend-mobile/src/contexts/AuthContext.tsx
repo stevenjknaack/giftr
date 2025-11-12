@@ -7,9 +7,9 @@ import React, {
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
-import UserApi from '@/api/users';
-import AuthApi from '@/api/auth';
-import { User } from '@/api/types';
+import UserApi from '@/services/users';
+import AuthApi from '@/services/auth';
+import { User } from '@/types';
 
 type AuthContextType = {
   isAuthenticated: boolean;

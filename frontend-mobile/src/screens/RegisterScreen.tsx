@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigation/Navigation';
-import AuthApi from '@/api/auth';
+import AuthApi from '@/services/auth';
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

@@ -1,5 +1,5 @@
-import { authenticatedAxiosApi as api } from './axios';
-import { User, BaseData } from './types';
+import { authenticatedAxiosApi as api } from '@/services/axios';
+import { User, BaseData } from '@/types';
 
 const usersUrl = 'users/';
 const userIdUrl = (id: number) => `${usersUrl}${id}/`;

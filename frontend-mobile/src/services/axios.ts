@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import AuthApi from './auth';
+import AuthApi from '@/services/auth';
 
 const baseURL = 'https://giftr.dev/api/'; //TODO: update to use react env variables
 const baseConfig = {

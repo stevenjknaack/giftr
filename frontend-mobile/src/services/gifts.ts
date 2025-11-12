@@ -1,5 +1,5 @@
-import ModelApi from './base';
-import { Gift } from './types';
+import ModelApi from '@/services/base';
+import { Gift } from '@/types';
 
 const GiftApi = new ModelApi<
   Gift,

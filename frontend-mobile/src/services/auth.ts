@@ -1,4 +1,4 @@
-import { AuthTokenPair, BaseData, User } from './types';
+import { AuthTokenPair, BaseData, User } from '@/types';
 import axios from 'axios';
 
 const authUrl = 'auth/';
