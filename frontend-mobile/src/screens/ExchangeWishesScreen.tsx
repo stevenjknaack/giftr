@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ExchangeTabsParamList } from '@/navigation/Navigation'; // Adjust the import path as needed
-import { Wish } from '@/api/types';
-import WishApi from '@/api/wishes';
+import { Wish } from '@/types';
+import WishApi from '@/services/wishes';
 import { useAuth } from '@/contexts/AuthContext';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import StyledModal from '@/generic-components/StyledModal';

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ExchangeTabsParamList } from '@/navigation/Navigation'; // Adjust the import path as needed
-import ExchangeApi from '@/api/exchanges';
-import { Exchange } from '@/api/types';
+import ExchangeApi from '@/services/exchanges';
+import { Exchange } from '@/types';
 
 type ExchangeGeneralScreenProps = {
   route: RouteProp<ExchangeTabsParamList, 'General'>;

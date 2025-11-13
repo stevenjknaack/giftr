@@ -1,7 +1,7 @@
-import api from './api';
+import { authenticatedAxiosApi as api } from './axios';
 import { BaseData } from './types';
 
-export default class ModelApi<
+export default abstract class ModelApi<
   T,
   Q extends Record<string, string> = Record<string, never>,
 > {
