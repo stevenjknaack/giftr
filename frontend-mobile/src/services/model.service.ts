@@ -3,10 +3,7 @@ import * as z from 'zod';
 
 export default abstract class ModelService<
   ModelSchema extends z.ZodObject,
-  QuerySchema extends z.ZodRecord<
-    z.ZodType<string, string>,
-    z.ZodOptional<z.ZodString>
-  > = z.ZodRecord<z.ZodType<string, string>, z.ZodOptional<z.ZodString>>,
+  QuerySchema extends z.ZodObject = z.ZodObject,
 > {
   private url: string;
   private modelSchema: ModelSchema;
@@ -23,7 +20,7 @@ export default abstract class ModelService<
   }
 
   private idUrl(id: number) {
-    return `${this.url}${id}/`;
+    return `${this.url.replaceAll('/', '')}/${id}/`;
   }
 
   public async create(data: z.infer<ModelSchema>) {
@@ -38,7 +35,8 @@ export default abstract class ModelService<
 
     let q: Record<string, string> = {};
     Object.entries(q).map(([key, value]) => {
-      if (typeof value === 'string') q = { ...q, [key]: value };
+      const str = String(value);
+      if (str) q = { ...q, [key]: str };
     });
     const qs = query ? `?${new URLSearchParams(q)}` : '';
     const res = await api.get(this.url + qs);

@@ -7,7 +7,7 @@ export class WishService extends ModelService<
 > {
   constructor() {
     super({
-      url: 'wishes/',
+      url: 'wishes',
       schema: WishSchema,
       querySchema: WishQuerySchema,
     });

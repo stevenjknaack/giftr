@@ -10,9 +10,9 @@ export const WishSchema = ModelMetadataSchema.extend({
 
 export type Wish = z.infer<typeof WishSchema>;
 
-export const WishQuerySchema = z.record(
-  z.enum(['user', 'exchange']),
-  z.string().optional()
-);
+export const WishQuerySchema = WishSchema.pick({
+  user: true,
+  exchange: true,
+}).partial();
 
 export type WishQuery = z.infer<typeof WishQuerySchema>;
