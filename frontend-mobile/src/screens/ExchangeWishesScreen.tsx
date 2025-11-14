@@ -10,7 +10,7 @@ import {
 import { RouteProp } from '@react-navigation/native';
 import { ExchangeTabsParamList } from '@/navigation/Navigation'; // Adjust the import path as needed
 import { Wish } from '@/types';
-import WishApi from '@/services/wishes';
+import wishService from '@/services/wishes.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import StyledModal from '@/generic-components/StyledModal';
@@ -33,9 +33,9 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
   const [editWishId, setEditWishId] = useState<number | null>(null);
 
   const refreshWishes = async () => {
-    await setRefreshing(true);
+    setRefreshing(true);
 
-    const response = await WishApi.list({
+    const response = await wishService.list({
       exchange: exchangeId,
       user: user?.id.toString(),
     });
@@ -64,7 +64,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
       return;
     }
 
-    const response = await WishApi.create({
+    const response = await wishService.create({
       name: wishName,
       url: wishUrl || null,
       user: user?.id ?? -1,
@@ -87,7 +87,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
       return;
     }
 
-    const response = await WishApi.partialUpdate(id, {
+    const response = await wishService.partialUpdate(id, {
       name: wishName,
       url: wishUrl || null,
     });
@@ -104,7 +104,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
   };
 
   const handleDeleteWish = async (id: number) => {
-    const response = await WishApi.delete(id);
+    const response = await wishService.delete(id);
 
     if (response.status !== 204) {
       Alert.alert('Api Error', 'Failed to delete wish');

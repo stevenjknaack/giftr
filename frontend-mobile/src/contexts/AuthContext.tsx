@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
-import UserApi from '@/services/users';
-import AuthApi from '@/services/auth';
+import UserApi from '@/services/users.service';
+import AuthApi from '@/services/auth.service';
 import { User } from '@/types';
 
 type AuthContextType = {
