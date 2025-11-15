@@ -33,18 +33,20 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
   const [editWishId, setEditWishId] = useState<number | null>(null);
 
   const refreshWishes = async () => {
+    if (!user) return;
     setRefreshing(true);
 
-    const response = await wishService.list({
-      exchange: exchangeId,
-      user: user?.id.toString(),
-    });
-
-    if (response.status !== 200) {
-      Alert.alert('Api Error');
-    } else {
-      setWishes(response.data);
+    try {
+      const wishesList = await wishService.list({
+        exchange: Number(exchangeId),
+        user: user.id,
+      });
+      setWishes(wishesList);
+    } catch (e) {
+      console.error('Error fetching wishes:', e);
+      Alert.alert('Error', 'Error fetching wishes');
     }
+
     setRefreshing(false);
   };
 
@@ -64,19 +66,22 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
       return;
     }
 
-    const response = await wishService.create({
-      name: wishName,
-      url: wishUrl || null,
-      user: user?.id ?? -1,
-      exchange: parseInt(exchangeId),
-    });
+    try {
+      await wishService.create({
+        name: wishName,
+        url: wishUrl || null,
+        user: user?.id ?? -1,
+        exchange: parseInt(exchangeId),
+      });
 
-    if (response.status !== 201) {
-      Alert.alert('Api Error', 'Failed to create wish');
+      Alert.alert('Success', 'Wish successfully created');
+    } catch (e) {
+      console.error('Error creating wish', e);
+      Alert.alert('Error', 'Failed to create wish');
       return;
     }
 
-    Alert.alert('Success', 'Wish successfully created');
+    //TODO: this should not happen here
     closeModal();
     refreshWishes();
   };
@@ -87,17 +92,19 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
       return;
     }
 
-    const response = await wishService.partialUpdate(id, {
-      name: wishName,
-      url: wishUrl || null,
-    });
-
-    if (response.status !== 200) {
-      Alert.alert('Api Error', 'Failed to update wish');
+    try {
+      await wishService.partialUpdate(id, {
+        name: wishName,
+        url: wishUrl || null,
+      });
+      Alert.alert('Success', 'Wish successfully updated');
+    } catch (e) {
+      console.error('Error updating wish', e);
+      Alert.alert('Error', 'Failed to update wish');
       return;
     }
 
-    Alert.alert('Success', 'Wish successfully updated');
+    // TODO: move these
     closeModal();
     setEditWishId(null);
     refreshWishes();
