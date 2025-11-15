@@ -3,19 +3,23 @@ import * as z from 'zod';
 
 export default abstract class ModelService<
   ModelSchema extends z.ZodObject,
+  ModelBaseSchema extends z.ZodObject,
   QuerySchema extends z.ZodObject = z.ZodObject,
 > {
   private url: string;
   private modelSchema: ModelSchema;
+  private modelBaseSchema: ModelBaseSchema;
   private querySchema: QuerySchema | null;
 
   constructor(config: {
     url: string;
     schema: ModelSchema;
-    querySchema: QuerySchema;
+    baseSchema: ModelBaseSchema;
+    querySchema?: QuerySchema;
   }) {
     this.url = config.url;
     this.modelSchema = config.schema;
+    this.modelBaseSchema = config.baseSchema;
     this.querySchema = config.querySchema ?? null;
   }
 
@@ -23,8 +27,9 @@ export default abstract class ModelService<
     return `${this.url.replaceAll('/', '')}/${id}/`;
   }
 
-  public async create(data: z.infer<ModelSchema>) {
-    const res = await api.post(this.url, data);
+  public async create(data: z.infer<ModelBaseSchema>) {
+    const parsedData = this.modelBaseSchema.parse(data);
+    const res = await api.post(this.url, parsedData);
     return this.modelSchema.parse(res.data);
   }
 
@@ -54,8 +59,12 @@ export default abstract class ModelService<
     return this.modelSchema.parse(res.data);
   }
 
-  public async partialUpdate(id: number, data: Partial<z.infer<ModelSchema>>) {
-    const res = await api.patch(this.idUrl(id), data);
+  public async partialUpdate(
+    id: number,
+    data: Partial<z.infer<ModelBaseSchema>>
+  ) {
+    const parsedData = this.modelBaseSchema.partial().parse(data);
+    const res = await api.patch(this.idUrl(id), parsedData);
     return this.modelSchema.parse(res.data);
   }
 
