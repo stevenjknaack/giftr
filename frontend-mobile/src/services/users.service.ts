@@ -1,5 +1,5 @@
 import { authenticatedAxiosApi as api } from '@/services/axios.service';
-import { User, BaseData } from '@/types';
+import { User, UserBase } from '@/types';
 
 const usersUrl = 'users/';
 const userIdUrl = (id: number) => `${usersUrl}${id}/`;
@@ -11,7 +11,7 @@ const UserApi = {
   get: (userId: number) => {
     return api.get<User>(userIdUrl(userId));
   },
-  partialUpdate: (userId: number, data: Partial<BaseData<User>>) => {
+  partialUpdate: (userId: number, data: Partial<UserBase>) => {
     return api.patch<User>(userIdUrl(userId), data);
   },
   whoAmI: () => {
