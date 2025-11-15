@@ -10,13 +10,13 @@ export const WishBaseSchema = z.object({
 
 export type BaseWish = z.infer<typeof WishBaseSchema>;
 
+export const WishSchema = ModelMetadataSchema.extend(WishBaseSchema.shape);
+
+export type Wish = z.infer<typeof WishSchema>;
+
 export const WishQuerySchema = WishBaseSchema.pick({
   user: true,
   exchange: true,
 }).partial();
 
 export type WishQuery = z.infer<typeof WishQuerySchema>;
-
-export const WishSchema = ModelMetadataSchema.extend(WishBaseSchema.shape);
-
-export type Wish = z.infer<typeof WishSchema>;

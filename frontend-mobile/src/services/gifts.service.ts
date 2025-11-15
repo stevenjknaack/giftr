@@ -1,9 +1,21 @@
-import ModelApi from '@/services/model.service';
-import { Gift } from '@/types';
+import ModelApiService from '@/services/model.service';
+import { GiftBaseSchema, GiftQuerySchema, GiftSchema } from '@/types';
 
-const GiftApi = new ModelApi<
-  Gift,
-  { to?: string; from?: string; exchange?: string }
->('gifts/');
+export class GiftService extends ModelApiService<
+  typeof GiftSchema,
+  typeof GiftBaseSchema,
+  typeof GiftQuerySchema
+> {
+  constructor() {
+    super({
+      url: 'gifts',
+      schema: GiftSchema,
+      baseSchema: GiftBaseSchema,
+      querySchema: GiftQuerySchema,
+    });
+  }
+}
 
-export default GiftApi;
+const giftService = new GiftService();
+
+export default giftService;
