@@ -1,9 +1,25 @@
-import ModelApi from '@/services/model.service';
-import { Exchange } from '@/types';
+import ModelApiService from '@/services/model.service';
+import {
+  ExchangeSchema,
+  ExchangeBaseSchema,
+  ExchangeQuerySchema,
+} from '@/types';
 
-export const ExchangeApi = new ModelApi<
-  Exchange,
-  { member?: string; owner?: string }
->('exchanges/');
+export class ExchangeService extends ModelApiService<
+  typeof ExchangeSchema,
+  typeof ExchangeBaseSchema,
+  typeof ExchangeQuerySchema
+> {
+  constructor() {
+    super({
+      url: 'exchanges',
+      schema: ExchangeSchema,
+      baseSchema: ExchangeBaseSchema,
+      querySchema: ExchangeQuerySchema,
+    });
+  }
+}
 
-export default ExchangeApi;
+const exchangeService = new ExchangeService();
+
+export default exchangeService;
