@@ -7,7 +7,7 @@ import { RootStackParamList } from '@/navigation/Navigation';
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import { Exchange } from '@/types';
 import ExchangeApi from '@/services/exchanges.service';
-import StyledModal from '@/generic-components/StyledModal';
+import StyledModal from '@/components/StyledModal';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;

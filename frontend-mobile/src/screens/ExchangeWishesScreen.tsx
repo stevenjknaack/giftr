@@ -13,7 +13,7 @@ import { Wish } from '@/types';
 import wishService from '@/services/wishes.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
-import StyledModal from '@/generic-components/StyledModal';
+import StyledModal from '@/components/StyledModal';
 
 type ExchangeWishesScreenProps = {
   route: RouteProp<ExchangeTabsParamList, 'Wishes'>;
