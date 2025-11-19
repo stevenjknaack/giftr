@@ -1,4 +1,4 @@
-import { authenticatedAxiosApi as api } from '@/services/axios';
+import { authenticatedApi as api } from '@/api/authenticated.api';
 import { User, UserBase } from '@/types';
 
 const usersUrl = 'users/';

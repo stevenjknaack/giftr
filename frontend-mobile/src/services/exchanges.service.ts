@@ -1,11 +1,11 @@
-import ModelApiService from '@/services/model.service';
+import ModelService from '@/services/model.service';
 import {
   ExchangeSchema,
   ExchangeBaseSchema,
   ExchangeQuerySchema,
 } from '@/types';
 
-export class ExchangeService extends ModelApiService<
+export class ExchangeService extends ModelService<
   typeof ExchangeSchema,
   typeof ExchangeBaseSchema,
   typeof ExchangeQuerySchema

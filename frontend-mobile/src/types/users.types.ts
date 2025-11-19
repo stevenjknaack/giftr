@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { ModelIdSchema } from './utils.types';
 
 export const UserBaseSchema = z.object({
   username: z.string(),
@@ -10,7 +11,7 @@ export const UserBaseSchema = z.object({
 export type UserBase = z.infer<typeof UserBaseSchema>;
 
 export const UserSchema = UserBaseSchema.extend({
-  id: z.number().int(),
+  id: ModelIdSchema,
 });
 
 export type User = z.infer<typeof UserSchema>;

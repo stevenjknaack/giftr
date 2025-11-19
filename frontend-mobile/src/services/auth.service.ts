@@ -1,39 +1,41 @@
-import { AuthTokenPair, BaseData, User } from '@/types';
-import axios from 'axios';
+import { unauthenticatedApi } from '@/api/unauthenticated.api';
+import {
+  AuthTokenPairSchema,
+  LoginRequest,
+  LoginRequestSchema,
+  RefreshRequest,
+  RefreshRequestSchema,
+  RefreshResponseSchema,
+  RegistrationUser,
+  RegistrationUserSchema,
+  UserSchema,
+} from '@/types';
 
-const authUrl = 'auth/';
-const baseURL = 'https://giftr.dev/api/'; //TODO: update to use react env variables
-const baseConfig = {
-  baseURL: baseURL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+export class AuthService {
+  private url = 'auth';
 
-/**
- * Axios instance for accessing non-authenticated routes
- */
-export const axiosApi = axios.create(baseConfig);
+  public async register(data: RegistrationUser) {
+    const parsedData = RegistrationUserSchema.parse(data);
+    const res = unauthenticatedApi.post(`${this.url}/register/`, parsedData);
+    return UserSchema.parse(res);
+  }
 
-const AuthApi = {
-  register: (data: BaseData<User> & { password: string }) => {
-    return axiosApi.post<User>(`${authUrl}register/`, data);
-  },
-  login: (username: string, password: string) => {
-    return axiosApi.post<AuthTokenPair>(`${authUrl}token/`, {
-      username,
-      password,
-    });
-  },
-  refresh: (refreshToken: string) => {
-    return axiosApi.post<Omit<AuthTokenPair, 'refresh'>>(
-      `${authUrl}token/refresh`,
-      {
-        refreshToken,
-      }
+  public async login(data: LoginRequest) {
+    const parsedData = LoginRequestSchema.parse(data);
+    const res = unauthenticatedApi.post(`${this.url}/token/`, parsedData);
+    return AuthTokenPairSchema.parse(res);
+  }
+
+  public async refresh(data: RefreshRequest) {
+    const parsedData = RefreshRequestSchema.parse(data);
+    const res = unauthenticatedApi.post(
+      `${this.url}/token/refresh`,
+      parsedData
     );
-  },
-};
+    return RefreshResponseSchema.parse(res);
+  }
+}
 
-export default AuthApi;
+const authService = new AuthService();
+
+export default authService;
