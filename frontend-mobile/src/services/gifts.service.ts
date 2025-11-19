@@ -1,7 +1,7 @@
-import ModelApiService from '@/services/model.service';
+import ModelService from '@/services/model.service';
 import { GiftBaseSchema, GiftQuerySchema, GiftSchema } from '@/types';
 
-export class GiftService extends ModelApiService<
+export class GiftService extends ModelService<
   typeof GiftSchema,
   typeof GiftBaseSchema,
   typeof GiftQuerySchema
