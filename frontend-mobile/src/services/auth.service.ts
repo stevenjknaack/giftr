@@ -16,23 +16,26 @@ export class AuthService {
 
   public async register(data: RegistrationUser) {
     const parsedData = RegistrationUserSchema.parse(data);
-    const res = unauthenticatedApi.post(`${this.url}/register/`, parsedData);
-    return UserSchema.parse(res);
+    const res = await unauthenticatedApi.post(
+      `${this.url}/register/`,
+      parsedData
+    );
+    return UserSchema.parse(res.data);
   }
 
   public async login(data: LoginRequest) {
     const parsedData = LoginRequestSchema.parse(data);
-    const res = unauthenticatedApi.post(`${this.url}/token/`, parsedData);
-    return AuthTokenPairSchema.parse(res);
+    const res = await unauthenticatedApi.post(`${this.url}/token/`, parsedData);
+    return AuthTokenPairSchema.parse(res.data);
   }
 
   public async refresh(data: RefreshRequest) {
     const parsedData = RefreshRequestSchema.parse(data);
-    const res = unauthenticatedApi.post(
+    const res = await unauthenticatedApi.post(
       `${this.url}/token/refresh`,
       parsedData
     );
-    return RefreshResponseSchema.parse(res);
+    return RefreshResponseSchema.parse(res.data);
   }
 }
 

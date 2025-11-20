@@ -59,6 +59,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       return true;
     } catch (error) {
       Alert.alert('error', 'caught' + error);
+      await SecureStore.deleteItemAsync('accessToken');
+      await SecureStore.deleteItemAsync('refreshToken');
       return false;
     }
   };

@@ -39,8 +39,8 @@ export class UserService extends ModelService<
   }
 
   public async whoAmI() {
-    const res = authenticatedApi.get(`auth/whoami/`);
-    return UserSchema.parse(res);
+    const res = await authenticatedApi.get(`auth/whoami/`);
+    return UserSchema.parse(res.data);
   }
 }
 
