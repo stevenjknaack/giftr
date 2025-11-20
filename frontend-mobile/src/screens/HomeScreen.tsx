@@ -33,8 +33,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     setRefreshingExchanges(true);
     try {
       const data = await ExchangeService.list({
-        member: user?.id,
-        owner: user?.id,
+        member: user.id,
+        owner: user.id,
       });
       setExchanges(data);
     } catch {

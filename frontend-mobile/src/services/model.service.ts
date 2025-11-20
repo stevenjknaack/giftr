@@ -1,4 +1,4 @@
-import { authenticatedApi as api } from '@/api/authenticated.api';
+import { authenticatedApi } from '@/api/authenticated.api';
 import * as z from 'zod';
 
 export default abstract class ModelService<
@@ -29,33 +29,34 @@ export default abstract class ModelService<
 
   public async create(data: z.infer<ModelBaseSchema>) {
     const parsedData = this.modelBaseSchema.parse(data);
-    const res = await api.post(this.url, parsedData);
+    const res = await authenticatedApi.post(this.url, parsedData);
     return this.modelSchema.parse(res.data);
   }
 
   public async list(query?: z.infer<QuerySchema>) {
+    let qs = this.url;
     if (this.querySchema && query) {
       this.querySchema.parse(query);
+
+      let q: Record<string, string> = {};
+      Object.entries(query).map(([key, value]) => {
+        const str = String(value);
+        if (str) q = { ...q, [key]: str };
+      });
+      qs += `?${new URLSearchParams(q)}`;
     }
 
-    let q: Record<string, string> = {};
-    Object.entries(q).map(([key, value]) => {
-      const str = String(value);
-      if (str) q = { ...q, [key]: str };
-    });
-    const qs = query ? `?${new URLSearchParams(q)}` : '';
-    const res = await api.get(this.url + qs);
-
+    const res = await authenticatedApi.get(qs);
     return z.array(this.modelSchema).parse(res.data);
   }
 
   public async get(id: number) {
-    const res = await api.get(this.idUrl(id));
+    const res = await authenticatedApi.get(this.idUrl(id));
     return this.modelSchema.parse(res.data);
   }
 
   public async update(id: number, data: z.infer<ModelSchema>) {
-    const res = await api.put(this.idUrl(id), data);
+    const res = await authenticatedApi.put(this.idUrl(id), data);
     return this.modelSchema.parse(res.data);
   }
 
@@ -64,11 +65,11 @@ export default abstract class ModelService<
     data: Partial<z.infer<ModelBaseSchema>>
   ) {
     const parsedData = this.modelBaseSchema.partial().parse(data);
-    const res = await api.patch(this.idUrl(id), parsedData);
+    const res = await authenticatedApi.patch(this.idUrl(id), parsedData);
     return this.modelSchema.parse(res.data);
   }
 
   public delete(id: number) {
-    return api.delete(this.idUrl(id));
+    return authenticatedApi.delete(this.idUrl(id));
   }
 }
