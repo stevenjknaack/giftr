@@ -1,22 +1,49 @@
-import { authenticatedApi as api } from '@/api/authenticated.api';
-import { User, UserBase } from '@/types';
+import { UserBaseSchema, UserSchema } from '@/types';
+import ModelService from './model.service';
+import { authenticatedApi } from '@/api/authenticated.api';
 
-const usersUrl = 'users/';
-const userIdUrl = (id: number) => `${usersUrl}${id}/`;
+export class UserService extends ModelService<
+  typeof UserSchema,
+  typeof UserBaseSchema
+> {
+  constructor() {
+    super({
+      url: 'users',
+      schema: UserSchema,
+      baseSchema: UserBaseSchema,
+    });
+  }
 
-const UserApi = {
-  list: () => {
-    return api.get<User[]>(usersUrl);
-  },
-  get: (userId: number) => {
-    return api.get<User>(userIdUrl(userId));
-  },
-  partialUpdate: (userId: number, data: Partial<UserBase>) => {
-    return api.patch<User>(userIdUrl(userId), data);
-  },
-  whoAmI: () => {
-    return api.get<User>(`auth/whoami/`);
-  },
-};
+  /**
+   * @deprecated Not Implemented
+   * @override
+   */
+  public async create(): Promise<never> {
+    throw new Error('Not Implemented');
+  }
 
-export default UserApi;
+  /**
+   * @deprecated Not Implemented
+   * @override
+   */
+  public async update(): Promise<never> {
+    throw new Error('Not Implemented');
+  }
+
+  /**
+   * @deprecated Not Implemented
+   * @override
+   */
+  public async delete(): Promise<never> {
+    throw new Error('Not Implemented');
+  }
+
+  public async whoAmI() {
+    const res = authenticatedApi.get(`auth/whoami/`);
+    return UserSchema.parse(res);
+  }
+}
+
+const userService = new UserService();
+
+export default userService;
