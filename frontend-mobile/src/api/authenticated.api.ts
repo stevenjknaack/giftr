@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import AuthApi from '@/services/auth.service';
+import AuthService from '@/services/auth.service';
 import { baseConfig } from '.';
 
 /**
@@ -43,15 +43,15 @@ authenticatedApi.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const response = await AuthApi.refresh(refreshToken);
-    if (response.status !== 200) {
+    try {
+      const response = await AuthService.refresh({ refresh: refreshToken });
+      await SecureStore.setItemAsync('accessToken', response.access);
+      Alert.alert('API Interceptor', 'Successfully refreshed accessToken.');
+      return authenticatedApi(error.config);
+    } catch {
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('accessToken');
       Alert.alert('Session expired', 'Please log in again.');
     }
-
-    await SecureStore.setItemAsync('accessToken', response.data.access);
-    Alert.alert('API Interceptor', 'Successfully refreshed accessToken.');
-    return authenticatedApi(error.config);
   }
 );
