@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
-import UserApi from '@/services/users';
-import AuthApi from '@/services/auth';
+import UserService from '@/services/users.service';
+import AuthService from '@/services/auth.service';
 import { User } from '@/types';
 
 type AuthContextType = {
@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const checkAuthentication = async () => {
       const accessToken = await SecureStore.getItemAsync('accessToken');
       if (accessToken) {
-        setUser((await UserApi.whoAmI()).data);
+        setUser(await UserService.whoAmI());
         setIsAuthenticated(true);
       }
     };
@@ -47,24 +47,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await AuthApi.login(username, password);
-
-      if (response.status !== 200) {
-        throw new Error();
-      }
-
-      const data = response.data;
+      const data = await AuthService.login({ username, password });
 
       await SecureStore.setItemAsync('accessToken', data.access);
       await SecureStore.setItemAsync('refreshToken', data.refresh);
 
-      setUser((await UserApi.whoAmI()).data);
+      setUser(await UserService.whoAmI());
       setIsAuthenticated(true);
 
       Alert.alert('login success', 'succeeded!');
       return true;
     } catch (error) {
       Alert.alert('error', 'caught' + error);
+      await SecureStore.deleteItemAsync('accessToken');
+      await SecureStore.deleteItemAsync('refreshToken');
       return false;
     }
   };

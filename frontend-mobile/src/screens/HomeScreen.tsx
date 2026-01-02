@@ -6,8 +6,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigation/Navigation';
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import { Exchange } from '@/types';
-import ExchangeApi from '@/services/exchanges';
-import StyledModal from '@/generic-components/StyledModal';
+import exchangeService from '@/services/exchanges.service';
+import StyledModal from '@/components/StyledModal';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
@@ -30,24 +30,18 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    await setRefreshingExchanges(true);
-
-    const response = await ExchangeApi.list({
-      member: user?.id.toString(),
-      owner: user?.id.toString(),
-    });
-
-    setRefreshingExchanges(false);
-
-    if (response.status !== 200) {
-      Alert.alert(
-        'Api Error',
-        `Error loading exchanges: ${response.statusText}`
-      );
-      return;
+    setRefreshingExchanges(true);
+    try {
+      const data = await exchangeService.list({
+        member: user.id,
+        owner: user.id,
+      });
+      setExchanges(data);
+    } catch {
+      Alert.alert('Error', `Error loading exchanges`);
     }
 
-    setExchanges(response.data);
+    setRefreshingExchanges(false);
   };
 
   useEffect(() => {
@@ -68,21 +62,20 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const response = await ExchangeApi.create({
-      name: exchangeName,
-      owner: user.id,
-      members: [user.id],
-    });
+    try {
+      await exchangeService.create({
+        name: exchangeName,
+        owner: user.id,
+        members: [user.id],
+      });
 
-    if (response.status !== 201) {
+      Alert.alert('Success', 'Your exchange was created!');
+      setModalVisible(false);
+      setExchangeName('');
+      refreshExchanges();
+    } catch {
       Alert.alert('Error', 'Failed to add exchange');
-      return;
     }
-
-    Alert.alert('Success', 'Your exchange was created!');
-    setModalVisible(false);
-    setExchangeName('');
-    refreshExchanges();
   };
 
   type ExchangeCardProps = {

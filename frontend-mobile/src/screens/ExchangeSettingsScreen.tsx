@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ExchangeTabsParamList } from '@/navigation/Navigation'; // Adjust the import path as needed
-import ExchangeApi from '@/services/exchanges';
+import ExchangeService from '@/services/exchanges.service';
 import { Exchange } from '@/types';
 import { Switch } from 'react-native-gesture-handler';
 
@@ -14,13 +14,14 @@ const ExchangeSettingsScreen: React.FC<ExchangeSettingsScreenProps> = ({
   route,
 }) => {
   const { exchangeId } = route.params;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [data, setData] = useState<Exchange | null>(null);
   const [loading, setLoading] = useState(true);
   const [switch1Enabled, setSwitch1Enabled] = useState<boolean>(false);
 
   const refreshData = async () => {
-    await setLoading(true);
-    await setData((await ExchangeApi.get(parseInt(exchangeId))).data);
+    setLoading(true);
+    setData(await ExchangeService.get(parseInt(exchangeId)));
     setLoading(false);
   };
 

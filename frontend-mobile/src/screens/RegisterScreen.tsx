@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigation/Navigation';
-import AuthApi from '@/services/auth';
+import AuthService from '@/services/auth.service';
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,28 +26,27 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleRegister = async () => {
     if (
-      username &&
-      password &&
-      email &&
-      firstName &&
-      lastName &&
-      password == passwordConfirm
-    ) {
-      const response = await AuthApi.register({
+      !username ||
+      !password ||
+      !email ||
+      !firstName ||
+      !lastName ||
+      password !== passwordConfirm
+    )
+      return;
+
+    try {
+      await AuthService.register({
         username,
         email,
         first_name: firstName,
         last_name: lastName,
         password,
       });
-
-      if (response.status !== 201) {
-        Alert.alert('Registration failed.', 'Please try again.');
-        return;
-      }
-
       Alert.alert('Registration Successful.', 'Now please log in.');
       navigation.navigate('Login');
+    } catch {
+      Alert.alert('Registration failed.', 'Please try again.');
     }
   };
 
