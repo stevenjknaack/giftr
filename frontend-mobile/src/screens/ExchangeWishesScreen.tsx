@@ -27,7 +27,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [modalMode, setModalMode] = useState<'create' | 'update'>('create');
+  const [modalMode, setModalMode] = useState<'Create' | 'Update'>('Create');
   const [wishName, setWishName] = useState<string>('');
   const [wishUrl, setWishUrl] = useState<string>('');
   const [editWishId, setEditWishId] = useState<number | null>(null);
@@ -158,7 +158,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
               onPress={() => {
                 setWishName(wish.name);
                 setWishUrl(wish.url ?? '');
-                setModalMode('update');
+                setModalMode('Update');
                 setEditWishId(wish.id);
                 setModalVisible(true);
               }}
@@ -195,9 +195,9 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
           style={styles.input}
         />
         <Button
-          title={modalMode}
+          title={modalMode.toLocaleLowerCase()}
           onPress={() => {
-            if (modalMode === 'create') handleCreateWish();
+            if (modalMode === 'Create') handleCreateWish();
             else handleUpdateWish(editWishId || -1);
           }}
         />
@@ -218,7 +218,7 @@ const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
           <Button
             title="Add"
             onPress={() => {
-              setModalMode('create');
+              setModalMode('Create');
               setModalVisible(true);
             }}
           />
