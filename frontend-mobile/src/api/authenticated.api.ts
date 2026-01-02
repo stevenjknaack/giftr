@@ -1,0 +1,59 @@
+import axios from 'axios';
+import { Alert } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import AuthService from '@/services/auth.service';
+import { baseConfig } from '.';
+
+/**
+ * Axios instance for accessing authenticated routes
+ */
+export const authenticatedApi = axios.create(baseConfig);
+
+// Request Interceptor (for attaching tokens)
+authenticatedApi.interceptors.request.use(
+  async (config) => {
+    const accessToken = await SecureStore.getItemAsync('accessToken');
+    if (accessToken) {
+      config.headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor (for handling errors)
+authenticatedApi.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (
+      error.response?.status !== 401 ||
+      (error.response?.data?.code !== 'token_not_valid' &&
+        error.response?.data?.detail !==
+          'Authentication credentials were not provided.')
+    ) {
+      Alert.alert('Request failed', 'Something went wrong.');
+      return Promise.reject(error);
+    }
+
+    const refreshToken = await SecureStore.getItemAsync('refreshToken');
+    if (!refreshToken) {
+      Alert.alert('Unauthorized', 'Please log in.');
+      return Promise.reject(error);
+    }
+
+    try {
+      const response = await AuthService.refresh({ refresh: refreshToken });
+      await SecureStore.setItemAsync('accessToken', response.access);
+      Alert.alert('API Interceptor', 'Successfully refreshed accessToken.');
+      return authenticatedApi(error.config);
+    } catch {
+      await SecureStore.deleteItemAsync('refreshToken');
+      await SecureStore.deleteItemAsync('accessToken');
+      Alert.alert('Session expired', 'Please log in again.');
+    }
+  }
+);
