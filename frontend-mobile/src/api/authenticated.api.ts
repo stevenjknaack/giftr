@@ -14,7 +14,7 @@ authenticatedApi.interceptors.request.use(
   async (config) => {
     const accessToken = await SecureStore.getItemAsync('accessToken');
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.set('Authorization', `Bearer ${accessToken}`);
     }
     return config;
   },
@@ -31,7 +31,9 @@ authenticatedApi.interceptors.response.use(
   async (error) => {
     if (
       error.response?.status !== 401 ||
-      error.response?.data?.code !== 'token_not_valid'
+      (error.response?.data?.code !== 'token_not_valid' &&
+        error.response?.data?.detail !==
+          'Authentication credentials were not provided.')
     ) {
       Alert.alert('Request failed', 'Something went wrong.');
       return Promise.reject(error);

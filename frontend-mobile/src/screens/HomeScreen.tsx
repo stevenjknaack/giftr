@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigation/Navigation';
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import { Exchange } from '@/types';
-import ExchangeService from '@/services/exchanges.service';
+import exchangeService from '@/services/exchanges.service';
 import StyledModal from '@/components/StyledModal';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -32,7 +32,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
     setRefreshingExchanges(true);
     try {
-      const data = await ExchangeService.list({
+      const data = await exchangeService.list({
         member: user.id,
         owner: user.id,
       });
@@ -63,7 +63,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     try {
-      await ExchangeService.create({
+      await exchangeService.create({
         name: exchangeName,
         owner: user.id,
         members: [user.id],

@@ -17,7 +17,8 @@ export default abstract class ModelService<
     baseSchema: ModelBaseSchema;
     querySchema?: QuerySchema;
   }) {
-    this.url = config.url;
+    // need trailing slash for our api
+    this.url = config.url.replace(/\/$/, '') + '/';
     this.modelSchema = config.schema;
     this.modelBaseSchema = config.baseSchema;
     this.querySchema = config.querySchema ?? null;
