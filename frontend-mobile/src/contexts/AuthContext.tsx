@@ -1,4 +1,3 @@
-// TODO: Add support for Android
 import React, {
   createContext,
   useContext,
@@ -8,8 +7,9 @@ import React, {
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
-import AuthApi from '@/api/auth';
-import { User } from '@/api/types';
+import UserService from '@/services/users.service';
+import AuthService from '@/services/auth.service';
+import { User } from '@/types';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const checkAuthentication = async () => {
       const accessToken = await SecureStore.getItemAsync('accessToken');
       if (accessToken) {
-        await setUser((await AuthApi.whoAmI()).data);
+        setUser(await UserService.whoAmI());
         setIsAuthenticated(true);
       }
     };
@@ -47,24 +47,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await AuthApi.login(username, password);
-
-      if (response.status !== 200) {
-        throw new Error();
-      }
-
-      const data = response.data;
+      const data = await AuthService.login({ username, password });
 
       await SecureStore.setItemAsync('accessToken', data.access);
       await SecureStore.setItemAsync('refreshToken', data.refresh);
 
-      await setUser((await AuthApi.whoAmI()).data);
-      await setIsAuthenticated(true);
+      setUser(await UserService.whoAmI());
+      setIsAuthenticated(true);
 
       Alert.alert('login success', 'succeeded!');
       return true;
     } catch (error) {
       Alert.alert('error', 'caught' + error);
+      await SecureStore.deleteItemAsync('accessToken');
+      await SecureStore.deleteItemAsync('refreshToken');
       return false;
     }
   };

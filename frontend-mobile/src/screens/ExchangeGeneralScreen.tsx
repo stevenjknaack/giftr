@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { ExchangeTabsParamList } from '@/navigation/Navigation'; // Adjust the import path as needed
-import ExchangeApi from '@/api/exchanges';
-import { Exchange } from '@/api/types';
+import ExchangeService from '@/services/exchanges.service';
+import { Exchange } from '@/types';
 
 type ExchangeGeneralScreenProps = {
   route: RouteProp<ExchangeTabsParamList, 'General'>;
@@ -17,8 +17,8 @@ const ExchangeGeneralScreen: React.FC<ExchangeGeneralScreenProps> = ({
   const [loading, setLoading] = useState(true);
 
   const refreshData = async () => {
-    await setLoading(true);
-    await setData((await ExchangeApi.get(parseInt(exchangeId))).data);
+    setLoading(true);
+    setData(await ExchangeService.get(parseInt(exchangeId)));
     setLoading(false);
   };
 
