@@ -7,23 +7,17 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
-import { ExchangeTabsParamList } from '@/navigation/Navigation';
 import { Wish } from '@/types';
 import wishService from '@/services/wishes.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import StyledModal from '@/components/StyledModal';
 
-type ExchangeWishesScreenProps = {
-  route: RouteProp<ExchangeTabsParamList, 'Wishes'>;
-};
+type ModelListProps<Model> = {};
 
-const ExchangeWishesScreen: React.FC<ExchangeWishesScreenProps> = ({
-  route,
-}) => {
-  const { user } = useAuth();
-  const { exchangeId } = route.params;
+const ModelList: React.FC<ModelListProps> = ({}) => {
+  //   const { user } = useAuth();
+  //   const { exchangeId } = route.params;
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -260,4 +254,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExchangeWishesScreen;
+export default ModelList;
